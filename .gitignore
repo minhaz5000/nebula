@@ -46,10 +46,9 @@ include/divisible/*
 ## Local 
 
 .idea/*.xml
-
+.cache/*
 build/**/*
 
-include/*
 lib/*
 bin/*
 test/test_runner
