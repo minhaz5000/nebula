@@ -1,42 +1,71 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
-# Proeject name - should not contain whitespace 
+# Project name - should not contain whitespace 
 project(nebula)
 
-#========== Global Configurations =============#
-#----------------------------------------------#
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Set the C++ standard for all targets (It sets the flags
-# (-std=c++11, -std=c++14 ...) on Clang or GCC. and /std=c++17 on MSVC
-# OPTIONAL:
-#---------------------------------
-set(CMAKE_CXX_STANDARD 17)     
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+# Turn on Compiler Warnings
+add_compile_options(-Wall -Wextra)
 
-# Find the GLFW package
-find_package(glfw3 REQUIRED)
+# Add source files
+file(GLOB_RECURSE SOURCE_FILES 
+    ${CMAKE_SOURCE_DIR}/src/*.c
+    ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-#========== Targets Configurations ============#
+# Add header files
+file(GLOB_RECURSE HEADER_FILES 
+    ${CMAKE_SOURCE_DIR}/src/*.h
+    ${CMAKE_SOURCE_DIR}/src/*.hpp)
 
-# Set the binary directory where the executable will be placed
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# Define the executable
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-# Build an executable (Unix-like OSes generates ./openglDemo1, on
-# Windows ./opengDemo1.exe)
-# ..........................................
-add_executable(nebula src/main.cpp)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# We need a CMAKE_DIR with some code to find external dependencies
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-# Set executable dependency libraries
-# Equivalent to pass flags -lGL, -lGLU and -lglut 
-# Link the GLFW library
-target_link_libraries(nebula PRIVATE glfw)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Add target to run executable 
-add_custom_target(run-ex
-    COMMAND ./nebula  # Specify the correct executable name and location
-    DEPENDS nebula 
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin  # Set the working directory to the "bin" folder
+#######################################
+# LOOK for the packages that we need! #
+#######################################
+
+# OpenGL
+# set(OpenGL_GL_PREFERENCE GLVND)
+find_package(OpenGL REQUIRED)
+
+# GLM
+find_package(GLM REQUIRED)
+message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+
+# GLFW
+find_package(GLFW3 REQUIRED)
+message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
+
+# GLAD
+add_library(GLAD "thirdparty/glad.c")
+
+# Put all libraries into a variable
+set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD)
+
+# Define the include DIRs
+include_directories(
+    "${CMAKE_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/include"
 )
 
+# Define the link libraries
+target_link_libraries(${PROJECT_NAME} ${LIBS})
+
+
+# Add target to run executable 
+add_custom_target(run
+    COMMAND ./nebula  # Specify the correct executable name and location
+    DEPENDS nebula 
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
 
