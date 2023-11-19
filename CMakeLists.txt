@@ -34,9 +34,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # LOOK for the packages that we need! #
 #######################################
 
+
+  
+  # note that the order is important for setting the libs
+  # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
+  set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread freetype ${ASSIMP_LIBRARY})
+  set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
+
 # OpenGL
-# set(OpenGL_GL_PREFERENCE GLVND)
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
+
+# X11
+# find_package(X11 REQUIRED)
 
 # GLM
 find_package(GLM REQUIRED)
@@ -50,6 +60,7 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 add_library(GLAD "thirdparty/glad.c")
 
 # Put all libraries into a variable
+# set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread freetype)
 set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD)
 
 # Define the include DIRs

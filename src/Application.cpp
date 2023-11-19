@@ -30,7 +30,6 @@ int main(void)
 
  // OpenGL version information
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
-    glGenBuffer
     
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
