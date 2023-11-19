@@ -20,5 +20,9 @@ public:
 
     ComplexNumber getConjugate() const;
     float getMagnitude() const;
+    ComplexNumber getCopy() const;
+    ComplexNumber neg() const;
+    ComplexNumber inv() const;
+    ComplexNumber abso() const;
 };
 

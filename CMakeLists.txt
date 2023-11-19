@@ -21,6 +21,8 @@ file(GLOB_RECURSE HEADER_FILES
 # Define the executable
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
+set(CMAKE_BUILD_TYPE Debug)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -61,7 +63,7 @@ add_library(GLAD "thirdparty/glad.c")
 
 # Put all libraries into a variable
 # set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread freetype)
-set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD)
+set(LIBS ${GLFW3_LIBRARY} ${OPENGL_LIBRARY} GLAD X11)
 
 # Define the include DIRs
 include_directories(

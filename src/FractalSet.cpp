@@ -55,7 +55,7 @@ void FractalSet::findPixel(int x, int y, ComplexNumber c) {
 	 * the depth at which i will break out of the loop
 	 * ultimately giving us an i denoting the depth for coloring
 	 */
-	for (; i < getDepth() && z.getMod() <= 5; i++, z = iterate(z, c));
+	for (; i < getDepth() && z.getMagnitude() <= 5; i++, z = iterate(z, c));
 	// based on number of iterations, find a color
 	findColor(i, x, y);
 }

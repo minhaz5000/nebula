@@ -44,3 +44,24 @@ float ComplexNumber::getMagnitude() const
     return glm::length(value);
 }
 
+ComplexNumber ComplexNumber::abso() const {
+    double r = (getReal() < 0) ? -getReal() : getReal();
+    double i = (getImag() < 0) ? -getImag() : getImag();
+    return ComplexNumber(r, i);
+}
+
+ComplexNumber ComplexNumber::getCopy() const {
+    return ComplexNumber(getReal(), getImag());
+}
+
+// negative, (a+bi) becomes (-a-bi)
+ComplexNumber ComplexNumber::neg() const {
+    return ComplexNumber(-(getReal()), -(getImag()));
+}
+
+// inverse, (a+bi) becomes (b+ai)
+ComplexNumber ComplexNumber::inv() const {
+    return ComplexNumber(getImag(), getReal());
+}
+
+
