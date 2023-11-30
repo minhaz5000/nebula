@@ -2,7 +2,6 @@
 #include <iostream>
 #include <sstream>
 #include <array>
-
 #include "FractalSet.h"
 
 #define WIDTH 800 // window width
