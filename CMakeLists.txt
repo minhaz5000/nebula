@@ -15,6 +15,9 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
+# OpenGL GLM Library
+add_subdirectory(external/glm)
+
 # GLAD
 add_subdirectory(external/glad)
 
@@ -34,5 +37,6 @@ target_link_libraries(Nebula
   PRIVATE GLAD
   PRIVATE glfw
   PRIVATE OpenGL::OpenGL
+  PRIVATE glm_static
   )
 
