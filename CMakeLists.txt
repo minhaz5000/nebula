@@ -16,27 +16,20 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
 # OpenGL GLM Library
-add_subdirectory(external/glm)
+# add_subdirectory(external/glm)
 
 # GLAD
 add_subdirectory(external/glad)
 
 add_executable(Nebula
   src/Application.cpp
-  src/ComplexNumber.cpp
-  src/ComplexNumber.h
-  src/Pixel.cpp
-  src/Pixel.h
-  src/Fractal.cpp
-  src/Fractal.h
-  src/FractalSet.cpp
-  src/FractalSet.h
+  src/Shader/Shader.cpp
+  src/Shader/Shader.h
   )
 
 target_link_libraries(Nebula
   PRIVATE GLAD
   PRIVATE glfw
   PRIVATE OpenGL::OpenGL
-  PRIVATE glm_static
   )
 
