@@ -4,18 +4,21 @@
 #include <iostream>
 #include "Shader/Shader.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
     glViewport(0, 0, width, height);
 }
 
 
-void process_input(GLFWwindow* window, float& zoom) {
+void process_input(GLFWwindow* window)
+{
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
-int main() {
+int main()
+{
     // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -28,7 +31,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Mandelbrot Fractal", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Nebula", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -73,10 +76,10 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    float zoom = 1.0f;
     // Main render loop
     while (!glfwWindowShouldClose(window)) {
-        process_input(window, zoom);
+        
+        process_input(window);
 
         // Use Mandelbrot shader
         mandelbrotShader.use();
@@ -84,9 +87,6 @@ int main() {
         // Set time uniform to create animation
         float currentTime = glfwGetTime();
         mandelbrotShader.setFloat("iTime", currentTime);
-
-        mandelbrotShader.setFloat("zoom", zoom);
-
 
         // Clear the screen
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -99,6 +99,7 @@ int main() {
 
         // Swap buffers
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     // Cleanup
