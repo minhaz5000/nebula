@@ -1,111 +1,59 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <iostream>
+#include "Window/Window.h"
+#include "Window/Input.h"
+#include "Window/GUI.h"
+#include "Renderer/Renderer.h"
+#include "Constants.h"
 #include "Shader/Shader.h"
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-
-void process_input(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    }
-}
+#include <cstdio>
 
 int main()
 {
-    // Initialize GLFW
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
-        return -1;
-    }
+    // Initialize a GLFW window
+    Window * window = Window::Init(Constants::Window::windowName, nullptr);
+    if (!window)
+        return EXIT_FAILURE;
 
-    // Set GLFW options (use OpenGL 4.6 Core Profile)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // Initialize Input Callbacks to the window
+    Input::Init(window->getWindow());
 
-    // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Nebula", nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
+    // Renderer for Fractals
+    Renderer * fractalRenderer = new Renderer();
+    fractalRenderer->loadShaders(Constants::Shaders::shaderFiles);
 
-    // Initialize GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
+    
 
-    // Set up viewport and callback functions
-    glViewport(0, 0, 800, 600);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // Create Mandelbrot shader
-    Shader mandelbrotShader("ShaderFiles/Mandelbrot/Mandelbrot_vertex_shader.glsl", "ShaderFiles/Mandelbrot/Mandelbrot_fragment_shader.glsl");
+    // GUI for Controlling the fractal Renderer
+    GUI gui(window->getWindow());
 
-    // Set up fullscreen quad
-    unsigned int fullscreenQuadVAO, fullscreenQuadVBO;
-    float quadVertices[] = {
-        -1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f,
-        -1.0f,  1.0f, 0.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f,
-         1.0f,  1.0f, 0.0f, 1.0f,
-        -1.0f,  1.0f, 0.0f, 1.0f
+    bool enableGUI = true;
+    bool show_demo_window = true;
+
+    auto guiLoop = [&]() -> bool {
+        
+        if (show_demo_window) {
+            ImGui::ShowDemoWindow(&show_demo_window);
+        }
+        return true;
     };
 
-    glGenVertexArrays(1, &fullscreenQuadVAO);
-    glGenBuffers(1, &fullscreenQuadVBO);
+    gui.addCallback(guiLoop);
 
-    glBindVertexArray(fullscreenQuadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, fullscreenQuadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    // Main render loop
-    while (!glfwWindowShouldClose(window)) {
+    fractalRenderer->setCurrentShader(Constants::Shaders::ShaderID::Mandelbrot);
+    auto windowLoop = [&]() -> bool {
         
-        process_input(window);
+        fractalRenderer->useCurrentShader();
+        GLfloat currentTime = glfwGetTime();
+        fractalRenderer->getCurrentShader()->setUniformFloat("iTime", currentTime);
+        fractalRenderer->draw();
+        if (enableGUI) {
+           gui.draw();
+        }
+        return true;
+    };
 
-        // Use Mandelbrot shader
-        mandelbrotShader.use();
+    window->Loop(windowLoop);
 
-        // Set time uniform to create animation
-        float currentTime = glfwGetTime();
-        mandelbrotShader.setFloat("iTime", currentTime);
-
-        // Clear the screen
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Render fullscreen quad
-        glBindVertexArray(fullscreenQuadVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        // Swap buffers
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    // Cleanup
-    glDeleteVertexArrays(1, &fullscreenQuadVAO);
-    glDeleteBuffers(1, &fullscreenQuadVBO);
-    glfwTerminate();
 
     return 0;
 }

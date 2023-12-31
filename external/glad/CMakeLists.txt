@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
-add_library(GLAD STATIC
-	src/glad.c
-	include/glad/glad.h)
+set(GLAD_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_include_directories(GLAD PUBLIC include/)
-# target_compile_features(GLAD PRIVATE PROPERTY C_STANDARD 99)
+add_library(glad STATIC
+	${GLAD_DIR}/src/glad.c
+	)
+
+target_include_directories(glad PUBLIC include/)
+# target_compile_features(glad PRIVATE PROPERTY C_STANDARD 99)
