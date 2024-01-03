@@ -16,8 +16,8 @@ GUI::GUI(GLFWwindow * window)
     ImGui_ImplOpenGL3_Init(Constants::GUI::GLSL_VERSION);
 
     // Setup Dear ImGui style
-    //ImGui::StyleColorsDark();
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
 }
 
 GUI::~GUI()

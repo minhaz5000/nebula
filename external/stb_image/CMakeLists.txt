@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 set(STB_IMAGE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library (stb_image STATIC
+add_library (stb_image
   ${STB_IMAGE_DIR}/src/stb_image.cpp
   ${STB_IMAGE_DIR}/src/stb_image_write.cpp
   ${STB_IMAGE_DIR}/include/stb_image.h

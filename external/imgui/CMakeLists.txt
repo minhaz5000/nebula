@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(imgui STATIC
+add_library(imgui
     ${IMGUI_DIR}/imgui_demo.cpp
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp

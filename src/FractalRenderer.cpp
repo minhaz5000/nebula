@@ -50,6 +50,12 @@ void FractalRenderer::renderFractal() {
             if (ImGui::Selectable("Julia", renderer->getCurrentShaderName() == "Julia")) {
                 useJuliaFractal();
             }
+            if (ImGui::Selectable("Julia Complex Dynamics", renderer->getCurrentShaderName() == "Julia Complex Dynamics")) {
+                useJuliaComplexDynamicsFractal();
+            }
+            if (ImGui::Selectable("Newton", renderer->getCurrentShaderName() == "Newton")) {
+                useNewtonFractal();
+            }
             ImGui::EndCombo();
         }
 
@@ -61,6 +67,10 @@ void FractalRenderer::renderFractal() {
             mandelbrotCallback();
         } else if (renderer->getCurrentShaderName() == "Julia") {
             juliaCallback();
+        } else if (renderer->getCurrentShaderName() == "Julia Complex Dynamics") {
+            juliaComplexDynamicsCallback();
+        } else if (renderer->getCurrentShaderName() == "Newton") {
+            newtonCallback();
         }
         // GUI logic for fractal settings
         
@@ -83,7 +93,10 @@ void FractalRenderer::renderFractal() {
 		renderer->getCurrentShader()->setUniformInt("u_iterations", iterations);
 		renderer->getCurrentShader()->setUniformVec3("u_color1", color1);
 		renderer->getCurrentShader()->setUniformVec3("u_color2", color2);
-		renderer->getCurrentShader()->setUniformVec3("u_color3", color3);
+		if (renderer->getCurrentShaderName() == "Julia")
+		{
+			renderer->getCurrentShader()->setUniformVec3("u_color3", color3);
+		}
 		renderer->getCurrentShader()->setUniformFloat("u_escapeRadius", escapeRadius);
 
     	// Additional rendering logic specific to fractals
@@ -99,6 +112,23 @@ void FractalRenderer::renderFractal() {
     	}
     	if (input->key(GLFW_KEY_DOWN) == InputKey::Pressed) {
         	timeScale *= 0.9f;  // Decrease time scaling by 10% with each frame
+    	}
+
+    	if (input->key(GLFW_KEY_W) == InputKey::Pressed) {
+        	fractalCenter.y += 0.1;
+    	}
+    	if (input->key(GLFW_KEY_A) == InputKey::Pressed) {
+        	fractalCenter.x -= 0.1;
+    	}
+    	if (input->key(GLFW_KEY_S) == InputKey::Pressed) {
+        	fractalCenter.y -= 0.1;
+    	}
+    	if (input->key(GLFW_KEY_D) == InputKey::Pressed) {
+        	fractalCenter.x += 0.1;
+    	}
+    	if (input->key(GLFW_KEY_X) == InputKey::Pressed) {
+        	fractalCenter = {0., 0.};
+        	fractalScale = 1.0;
     	}
 
 		// Pause/Resume Rendering
@@ -156,12 +186,26 @@ void FractalRenderer::useJuliaFractal() {
     color3 = glm::vec3(0.1,0.2,0.9);
 }
 
+void FractalRenderer::useNewtonFractal() {
+    // Additional setup or logic for Julia fractal
+    // ...
+
+    // Set the current shader to Julia fractal shader
+	renderer->setCurrentShader("Newton");
+}
+
 void FractalRenderer::useMandelbrotFractal() {
     // Additional setup or logic for Mandelbrot fractal
     // ...
 
     // Set the current shader to Mandelbrot fractal shader
+    escapeRadius = 4.0f;
 	renderer->setCurrentShader("Mandelbrot");
+}
+
+void FractalRenderer::useJuliaComplexDynamicsFractal()
+{
+	renderer->setCurrentShader("Julia Complex Dynamics");
 }
 
 // In the FractalRenderer class implementation
@@ -171,7 +215,7 @@ bool FractalRenderer::defaultCallback() {
 
     // Common fractal parameters
 	ImGui::SliderFloat2("Center", glm::value_ptr(fractalCenter), -2.0f, 2.0f);
-	ImGui::SliderFloat("Scale", &fractalScale, 0.1f, 20.0f);
+	ImGui::SliderFloat("Scale", &fractalScale, 0.1f, 10.0f);
 	ImGui::SliderInt("Iterations", &iterations, 1, 500);
 
 	return true;
@@ -183,8 +227,8 @@ bool FractalRenderer::juliaCallback()
     // Julia-specific GUI callback logic
     ImGui::Separator();
     ImGui::SliderFloat2("Julia Constant", glm::value_ptr(fractalConstant), -2.0f, 2.0f);
+    ImGui::SliderFloat("Escape Radius", &escapeRadius, 0.1f, 8.0f);
     // Color customization
-	ImGui::Separator();
 	ImGui::Text("Color Settings:");
 	ImGui::ColorEdit3("Color 1", glm::value_ptr(color1));
     ImGui::ColorEdit3("Color 2", glm::value_ptr(color2));
@@ -200,5 +244,17 @@ bool FractalRenderer::mandelbrotCallback()
 	ImGui::Text("Color Settings:");
 	ImGui::ColorEdit3("Color 1", glm::value_ptr(color1));
     ImGui::ColorEdit3("Color 2", glm::value_ptr(color2));
+	return true;
+}
+
+bool FractalRenderer::newtonCallback()
+{
+	
+	return true;
+}
+
+bool FractalRenderer::juliaComplexDynamicsCallback()
+{
+	
 	return true;
 }

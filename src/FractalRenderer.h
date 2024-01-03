@@ -46,9 +46,13 @@ public:
     // Switch to different fractal types
     void useJuliaFractal();
     void useMandelbrotFractal();
+    void useNewtonFractal();
+    void useJuliaComplexDynamicsFractal();
 
     // GUI callback functions
     bool defaultCallback();
     bool juliaCallback();
     bool mandelbrotCallback();
+    bool newtonCallback();
+    bool juliaComplexDynamicsCallback();
 };
