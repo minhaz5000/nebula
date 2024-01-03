@@ -6,6 +6,10 @@ project(Nebula VERSION 1.0
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+endif()
+
 # OpenGL
 find_package(OpenGL REQUIRED)
 
@@ -41,6 +45,8 @@ add_executable(Nebula
   src/Application.cpp
   src/Renderer/Renderer.h
   src/Renderer/Renderer.cpp
+  src/FractalRenderer.cpp
+  src/FractalRenderer.h
   )
 
 target_link_libraries(Nebula

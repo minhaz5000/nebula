@@ -38,19 +38,19 @@ public:
     void setUniformFloat(const GLchar * uniformName, const GLfloat nb);
 
     // Set Uniform 2D vector (vec2)
-    void setUniformFloat(const GLchar * uniformName, const glm::vec2 & nbs);
+    void setUniformVec2(const GLchar * uniformName, const glm::vec2 & nbs);
 
     // Set Uniform 2D vector using 2 float values
     void setUniformFloat(const GLchar * uniformName, const GLfloat nb1, const GLfloat nb2);
 
     // Set Uniform 3D vector (vec3)
-    void setUniformFloat(const GLchar * uniformName, const glm::vec3 & nbs);
+    void setUniformVec3(const GLchar * uniformName, const glm::vec3 & nbs);
 
     // Set Uniform 3D vector using 3 float values
     void setUniformFloat(const GLchar * uniformName, const GLfloat nb1, const GLfloat nb2, const GLfloat nb3);
 
     // Set Uniform 4D vector using vec4
-    void setUniformFloat(const GLchar * uniformName, const glm::vec4 & nbs);
+    void setUniformVec4(const GLchar * uniformName, const glm::vec4 & nbs);
 
     // Set Uniform 4D vector using 4 float values
     void setUniformFloat(const GLchar * uniformName, const GLfloat nb1, const GLfloat nb2, const GLfloat nb3, const GLfloat nb4);

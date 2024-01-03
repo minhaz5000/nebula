@@ -1,5 +1,9 @@
 #version 460 core
 
-void main() {
-    gl_Position = vec4(1.0, 1.0, 0.0, 1.0); // Set the vertex position
+layout(location = 0) in vec2 position;
+
+void main()
+{
+    // Set the vertex position
+    gl_Position = vec4(position, 0.0, 1.0);
 }

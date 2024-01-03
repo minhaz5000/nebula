@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "GLFW/glfw3.h"
 
 std::unique_ptr<Input> Input::instance(nullptr);
 
@@ -6,10 +7,11 @@ Input::Input() : keys{InputKey::Released}, lastIndex{-1}, mouseMoved(false), mou
 lastPosition(0.0), positionOffset(0.0), scrollOffset(0.0f, 0.0f) {}
 
 // Initialize GLFW callbacks
-bool Input::Initialize(GLFWwindow * window)
+bool Input::createInstance(GLFWwindow * window)
 {
     glfwSetCursorPosCallback(window, staticInputMouseCallback);
     glfwSetScrollCallback(window, staticInputScrollCallback);
+    glfwSetKeyCallback(window, staticInputKeyCallback);
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     lastPosition = glm::vec2{xpos, ypos};
@@ -32,29 +34,30 @@ void Input::InputCallbackCorrection()
         keys[lastIndex] = static_cast<InputKey>((static_cast<unsigned char>(keys[lastIndex]) + 1) % 4);
         lastIndex = -1;
     }
-    resetState();
+    mouseScrollMoved = mouseMoved = false;
+    scrollOffset = positionOffset = glm::vec2(0.0f, 0.0f);
 }
 
 // Callback for mouse movement
 void Input::InputMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    InputCallbackCorrection();  // Correct any previous input callbacks
-    updatePosition(xpos, ypos);
+    mouseMoved = true;
+    positionOffset.x = xpos - lastPosition.x;
+    positionOffset.y = lastPosition.y - ypos;
+    lastPosition.x = xpos;
+    lastPosition.y = ypos;
 }
 
 // Callback for mouse scroll
 void Input::InputScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
 {
-    InputCallbackCorrection();  // Correct any previous input callbacks
-    resetState();  // Reset the mouse state when scrolling
-    positionOffset = glm::vec2{xoffset, yoffset};
+    scrollOffset = glm::vec2(xoffset, yoffset);
+    mouseScrollMoved = true;
 }
 
 // Callback for keyboard input
 void Input::InputKeyCallback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
-    InputCallbackCorrection();  // Correct any previous input callbacks
-
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 
@@ -72,12 +75,6 @@ void Input::InputKeyCallback(GLFWwindow * window, int key, int scancode, int act
                 break;
         }
     }
-}
-
-// Correct input-related callbacks Static function
-void Input::staticInputCallbackCorrection()
-{
-    instance->InputCallbackCorrection();
 }
 
 // Callback for mouse movement Static function
@@ -101,27 +98,13 @@ void Input::staticInputKeyCallback(GLFWwindow * window, int key, int scancode, i
 Input * Input::Init(GLFWwindow * window)
 {
     Input * input = new Input();
-    if (input->Initialize(window))
+    if (input->createInstance(window))
         instance.reset(input);
     else
         delete input;
     return instance.get();
 }
 
-void Input::resetState()
-{
-    mouseMoved = mouseScrollMoved = false;
-    positionOffset = scrollOffset = glm::vec2(0.0f, 0.0f);
-}
-
-void Input::updatePosition(double xpos, double ypos)
-{
-    mouseMoved = true;
-    positionOffset.x = xpos - lastPosition.x;
-    positionOffset.y = lastPosition.y - ypos;
-    lastPosition.x = xpos;
-    lastPosition.y = ypos;
-}
 
 // Get mouse position
 glm::vec2 Input::getPosition() const
@@ -139,7 +122,7 @@ glm::vec2 Input::getPositionOffset() const
 glm::vec2 Input::getWheelOffset() const
 {
     // For now, using the same offset for X and Y
-    return glm::vec2(positionOffset.x, positionOffset.y);
+    return glm::vec2(scrollOffset.x, scrollOffset.y);
 }
 
 // Check if the mouse has moved
@@ -151,10 +134,15 @@ bool Input::mouseHasMoved() const
 // Check if the mouse wheel has moved
 bool Input::mouseScrollHasMoved() const
 {
-    return mouseMoved;
+    return mouseScrollMoved;
 }
 
-Input * Input::Get()
+Input * Input::getInstance()
 {
     return instance.get();
+}
+
+Input::~Input()
+{
+    
 }

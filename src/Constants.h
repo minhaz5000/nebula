@@ -2,20 +2,21 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 namespace Constants
 {
 	namespace Window
 	{
-		constexpr const char * windowName = "Nebula - A Fractal Renderer";
-		constexpr const int windowHeight = 1280;
-		constexpr const int windowWidth = 720;
+		constexpr const char * Name = "Nebula - A Fractal Renderer";
+		constexpr const int Width = 1280;
+		constexpr const int Height = 720;
 		// Window
-		constexpr const char * windowIcon            = "resources/Icons/tsinghua_icon.png";
+		constexpr const char * Icon = "resources/Icons/tsinghua_icon.png";
 	};
 
 	namespace GUI
 	{
-		constexpr const char * GLSL_VERSION = "#version 330";
+		constexpr const char * GLSL_VERSION = "#version 460";
 	}
 
 	namespace Shaders
@@ -23,20 +24,24 @@ namespace Constants
 		
 		// Shaders
 
-		enum class ShaderID: unsigned int {
-			Mandelbrot, Julia
+		const std::vector<std::string> ShaderNames =  {
+			"Mandelbrot",
+			"Julia",
 		};
 
-		const std::unordered_map<Constants::Shaders::ShaderID, std::pair<std::string, std::string>> shaderFiles = {
+		const std::unordered_map<std::string, std::pair<std::string, std::string> > ShaderFiles = {
         	{
-        		ShaderID::Mandelbrot, {"resources/Shaders/Mandelbrot/mandelbrotVert.glsl", "resources/Shaders/Mandelbrot/mandelbrotFrag.glsl"}
+        		"Mandelbrot", {"resources/Shaders/Mandelbrot/mandelbrotVert.glsl", "resources/Shaders/Mandelbrot/mandelbrotFrag.glsl"}
+
+        	},
+
+        	{
+        		"Julia", {"resources/Shaders/Julia/juliaVert.glsl", "resources/Shaders/Julia/juliaFrag.glsl"}
+        		
         	},
 
         	// Add more shaders here
     	};
-
-		
-
 		
 		// Fonts
 		constexpr const char * arialFont = "resources/Fonts/arial.ttf";

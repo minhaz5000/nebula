@@ -1,13 +1,15 @@
 #include "Window.h"
 #include <stb_image.h>
 #include <iostream>
+#include "../Constants.h"
 
 
 std::unique_ptr<Window> Window::instance(nullptr);
 
 Window::Window()
-    : window(nullptr), initialized(GLFW_FALSE), deltaTime(0.0f), deltaTimeMultiplier(1.0f), fpsCap(0), width(1280),
- height(720), windowDimensionsChanged(false), windowIsFocused(true) {}
+    : window(nullptr), initialized(GLFW_FALSE), deltaTime(0.0f), deltaTimeMultiplier(1.0f), fpsCap(0),
+     windowWidth(DEFAULT_WINDOW_WIDTH), windowHeight(DEFAULT_WINDOW_HEIGHT),
+     windowDimensionsChanged(false), windowIsFocused(true) {}
 
 Window::~Window()
 {
@@ -17,7 +19,7 @@ Window::~Window()
         glfwDestroyWindow(window);
 }
 
-bool Window::Initialize(const char * windowName, const char * iconPath)
+bool Window::createInstance(const char * windowName, const char * iconPath, int width, int height)
 {
     if ((initialized = glfwInit()) == GLFW_FALSE) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -31,7 +33,10 @@ bool Window::Initialize(const char * windowName, const char * iconPath)
     // Anti-Aliasing
     // glfwWindowHint(GLFW_SAMPLES, 4);
 
-    if ((window = glfwCreateWindow(width, height, windowName, nullptr, nullptr)) == nullptr) {
+    windowWidth = width;
+    windowHeight = height;
+
+    if ((window = glfwCreateWindow(windowWidth, windowHeight, windowName, nullptr, nullptr)) == nullptr) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         return false;
     }
@@ -62,11 +67,9 @@ bool Window::Initialize(const char * windowName, const char * iconPath)
     return true;
 }
 
-bool Window::Loop(std::function<bool()> loopFunction)
+bool Window::renderWindow(std::function<bool()> loopFunction)
 {
     while (!glfwWindowShouldClose(window)) {
-
-        glfwPollEvents();
 
         // Clear the screen
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -82,55 +85,56 @@ bool Window::Loop(std::function<bool()> loopFunction)
 
         windowDimensionsChanged = false;
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     return true;
 }
 
-float Window::DeltaTime() const
+float Window::getDeltaTime() const
 {
     return deltaTime * deltaTimeMultiplier;
 }
 
-float Window::DeltaTimeNoMultiplier() const
+float Window::getDeltaTimeNoMultiplier() const
 {
     return deltaTime;
 }
 
-int Window::WindowWidth() const
+int Window::getWindowWidth() const
 {
-    return width;
+    return windowWidth;
 }
 
-int Window::WindowHeight() const
+int Window::getWindowHeight() const
 {
-    return height;
+    return windowHeight;
 }
 
-bool Window::WindowDimensionsChanged() const
+bool Window::isWindowDimensionsChanged() const
 {
     return windowDimensionsChanged;
 }
 
-bool Window::IsWindowFocused() const
+bool Window::isWindowFocused() const
 {
     return windowIsFocused;
 }
 
-void Window::SetTimeMultiplier(float newMult)
+void Window::setTimeMultiplier(float newMult)
 {
     deltaTimeMultiplier = newMult;
 }
 
-const float& Window::GetTimeMultiplier() const
+const float& Window::getTimeMultiplier() const
 {
     return deltaTimeMultiplier;
 }
 
-Window * Window::Init(const char * windowName, const char * iconPath)
+Window * Window::Init(const char * windowName, const char * iconPath, int width, int height)
 {
     Window * window = new Window();
-    if (window->Initialize(windowName, iconPath))
+    if (window->createInstance(windowName, iconPath, width, height))
         instance.reset(window);
     else
         delete window;
@@ -144,8 +148,8 @@ GLFWwindow * Window::getWindow()
 
 void Window::framebufferSizeCallback(GLFWwindow * window, int newWidth, int newHeight)
 {
-    width = newWidth;
-    height = newHeight;
+    windowWidth = newWidth;
+    windowHeight = newHeight;
     glViewport(0, 0, newWidth, newHeight);
     windowDimensionsChanged = true;
 }
@@ -165,7 +169,7 @@ void Window::staticWindowFocusCallback(GLFWwindow * window, int focusState)
     instance->windowFocusCallback(window, focusState);
 }
 
-bool Window::HandleLoopIteration()
+bool Window::handleLoopIteration()
 {
     GLfloat lastFrame = 0.0f;
     GLfloat currentFrame = glfwGetTime();
@@ -185,4 +189,9 @@ bool Window::HandleLoopIteration()
     glfwPollEvents();
 
     return true;
+}
+
+Window * Window::getInstance()
+{
+    return instance.get();
 }

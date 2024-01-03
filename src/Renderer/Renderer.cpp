@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include <iostream>
 
-Renderer::Renderer() : currentShader{nullptr}
+Renderer::Renderer() : currentShader{nullptr}, shaderCount{0}
 {
 	GLfloat quadVertices[] = {
         -1.0f, -1.0f,
@@ -51,9 +51,10 @@ GLuint Renderer::getVBO()
 	return vbo;
 }
 
-void Renderer::setCurrentShader(Constants::Shaders::ShaderID shaderID)
+void Renderer::setCurrentShader(std::string shaderName)
 {
-    currentShader = &getShader(shaderID);
+    currentShader = &getShader(shaderName);
+    currentShaderName = shaderName;
 }
 
 void Renderer::useCurrentShader() const
@@ -66,20 +67,21 @@ Shader * Renderer::getCurrentShader() const
 	return currentShader;
 }
 
-void Renderer::loadShaders(const std::unordered_map<Constants::Shaders::ShaderID, std::pair<std::string, std::string>> &shaderFiles)
+void Renderer::loadShaders(const std::unordered_map<std::string, std::pair<std::string, std::string>> &shaderFiles)
 {
 	for (const auto& shaderEntry : shaderFiles) {
-        const auto& shaderID = shaderEntry.first;
+        const auto& shaderName = shaderEntry.first;
         const auto& filePaths = shaderEntry.second;
 
         auto shader = std::make_unique<Shader>(filePaths.first.c_str(), filePaths.second.c_str());
-        shaders.emplace(shaderID, std::move(shader));
+        shaders.emplace(shaderName, std::move(shader));
     }
+    shaderCount = shaders.size();
 }
 
-Shader & Renderer::getShader(const Constants::Shaders::ShaderID shaderID)
+Shader & Renderer::getShader(const std::string shaderName)
 {
-	return *shaders.at(shaderID);
+	return *shaders.at(shaderName);
 }
 
 void Renderer::draw()
@@ -87,4 +89,13 @@ void Renderer::draw()
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+}
+
+std::string Renderer::getCurrentShaderName() const
+{
+    return currentShaderName;
+}
+int Renderer::getShaderCount() const
+{
+    return shaderCount;
 }

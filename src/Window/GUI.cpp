@@ -27,7 +27,7 @@ GUI::~GUI()
     ImGui::DestroyContext();
 }
 
-bool GUI::draw()
+bool GUI::drawGUI()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();

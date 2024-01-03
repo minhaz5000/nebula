@@ -1,74 +1,40 @@
 #version 460 core
 
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform int u_iterations;
+uniform vec2 u_fractalCenter;
+uniform float u_fractalScale;
+uniform vec2 u_juliaC;
+uniform vec3 u_color1;
+uniform vec3 u_color2;
+
 out vec4 fragColor;
 
-// Palette
-#define LN2 0.6931471806
+void main()
+{
+    // Normalize coordinates to the range [-1, 1]
+    vec2 normalizedCoord = (2.0 * gl_FragCoord.xy - u_resolution) / min(u_resolution.x, u_resolution.y);
 
-struct palette {
-    vec3 c0, c1, c2, c3, c4;
-};
+    // Apply scaling and centering to the fractal
+    vec2 c = u_fractalCenter + normalizedCoord * u_fractalScale;
 
-palette palette_blue() {
-    palette p; 
-    p.c0 = vec3(0,2,5)/255.;
-    p.c1 = vec3(8,45,58)/255.;
-    p.c2 = vec3(38,116,145)/255.;
-    p.c3 = vec3(167,184,181)/255.;
-    p.c4 = vec3(207,197,188)/255.;
-    return p;    
-}
-
-// Random
-float random(in vec2 st) {
-    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-}
-
-float randSeed = 0.;
-vec2 nextRand2() {
-    vec2 v = vec2(randSeed++, randSeed++);
-    return vec2(random(v + 0.34), random(v + 0.75));
-}
-
-// Mapping
-vec3 cmap(float t, palette p) {
-    vec3 col = vec3(0);
-    col = mix(p.c0, p.c1, smoothstep(0., .2, t));
-    col = mix(col, p.c2, smoothstep(.2, .4, t));
-    col = mix(col, p.c3, smoothstep(.4, .6, t));
-    col = mix(col, p.c4, smoothstep(.6, .8, t));
-    col = mix(col, p.c0, smoothstep(.8, 1., t));
-    return col;
-}
-
-#define MAX_ITER 450.
-#define THRESHOLD 4.
-
-float mandelbrot(vec2 uv) {
-    vec2 c = 2.5 * (uv - vec2(.2, 0));
-    vec2 z = vec2(0);
-    float i = 0.;
-
-    for (; ++i <= MAX_ITER;) {
-        z = mat2(z, -z.y, z.x) * z + c;
-        if (dot(z, z) > THRESHOLD) break;
+    // Julia set iteration
+    vec2 z = c;
+    int iterations = 0;
+    for (int i = 0; i < u_iterations; ++i) {
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + u_juliaC;
+        if (dot(z, z) > 4.0) {
+            break;
+        }
+        iterations++;
     }
 
-    return i - log(log(dot(z, z)) / LN2) / LN2;
-}
+    // Color the fractal based on iterations
+    float t = float(iterations) / float(u_iterations - 1);
+    vec3 color = mix(u_color1, u_color2, t);
 
-void main() {
-    vec2 R = gl_FragCoord.xy;
-    palette pal = palette_blue();
-    vec3 col = vec3(0);
-
-    for (float i = 0.; i < 3.; i++) {
-        vec2 p = 0.00017 * (2. * gl_FragCoord.xy - R + nextRand2()) / R.y - vec2(-0.35209, 0.09199);
-        float orbit = mandelbrot(p) / MAX_ITER;
-        col += cmap(fract(3.3 * orbit + iTime / 8.) - 0.0001, pal);
-    }
-
-    col /= 3.0; // Divide by the number of samples
-
-    fragColor = vec4(col, 1.0);
+    // Output final color
+    fragColor = vec4(color, 1.0);
 }

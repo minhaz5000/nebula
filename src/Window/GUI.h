@@ -14,7 +14,7 @@ class GUI
 public:
     GUI(GLFWwindow * window);
     ~GUI();
-    bool draw();
+    bool drawGUI();
     void addCallback(std::function<bool()> callbackFunction);
 
 private:

@@ -132,7 +132,7 @@ void Shader::setUniformFloat(const GLchar * uniformName, const GLfloat nb)
     glUniform1f(getUniformID(uniformName), nb);
 }
 
-void Shader::setUniformFloat(const GLchar * uniformName, const glm::vec2 & nbs)
+void Shader::setUniformVec2(const GLchar * uniformName, const glm::vec2 & nbs)
 {
     glUniform2fv(getUniformID(uniformName), 1, glm::value_ptr(nbs));
 }
@@ -142,7 +142,7 @@ void Shader::setUniformFloat(const GLchar * uniformName, const GLfloat nb1, cons
     glUniform2f(getUniformID(uniformName), nb1, nb2);
 }
 
-void Shader::setUniformFloat(const GLchar * uniformName, const glm::vec3 & nbs)
+void Shader::setUniformVec3(const GLchar * uniformName, const glm::vec3 & nbs)
 {
     glUniform3fv(getUniformID(uniformName), 1, glm::value_ptr(nbs));
 }
@@ -152,7 +152,7 @@ void Shader::setUniformFloat(const GLchar * uniformName, const GLfloat nb1, cons
     glUniform3f(getUniformID(uniformName), nb1, nb2, nb2);
 }
 
-void Shader::setUniformFloat(const GLchar * uniformName, const glm::vec4 & nbs)
+void Shader::setUniformVec4(const GLchar * uniformName, const glm::vec4 & nbs)
 {
     glUniform4fv(getUniformID(uniformName), 1, glm::value_ptr(nbs));
 }
