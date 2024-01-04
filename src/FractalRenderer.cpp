@@ -131,6 +131,10 @@ void FractalRenderer::renderFractal() {
         	fractalScale = 1.0;
     	}
 
+    	// if (input->key(GLFW_MOUSE_BUTTON_LEFT) == InputKey::Pressed) {
+        //     fractalCenter += input->getPositionOffset();
+        // }
+
 		// Pause/Resume Rendering
     	if (input->key(GLFW_KEY_P) == InputKey::JustPressed) {
         	pauseRendering = !pauseRendering;
@@ -144,10 +148,6 @@ void FractalRenderer::renderFractal() {
     	// Zoom in/out using the mouse wheel
     	if (input->mouseScrollHasMoved()) {
         	fractalScale *= exp(input->getWheelOffset().y * 0.1f);  // Adjust the scaling factor as needed
-    		if (fractalScale < 0)
-    			fractalScale = 0;
-    		else if (fractalScale > 20.0)
-    			fractalScale = 20.0;
     	}
 
     	 // Change color algorithm based on user input
@@ -215,7 +215,7 @@ bool FractalRenderer::defaultCallback() {
 
     // Common fractal parameters
 	ImGui::SliderFloat2("Center", glm::value_ptr(fractalCenter), -2.0f, 2.0f);
-	ImGui::SliderFloat("Scale", &fractalScale, 0.1f, 10.0f);
+	ImGui::SliderFloat("Scale", &fractalScale, 0.1f, 100.0f);
 	ImGui::SliderInt("Iterations", &iterations, 1, 500);
 
 	return true;
