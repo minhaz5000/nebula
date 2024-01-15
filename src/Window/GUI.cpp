@@ -15,6 +15,10 @@ GUI::GUI(GLFWwindow * window)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(Constants::GUI::GLSL_VERSION);
 
+    // Set custom font
+    ImFont* font = io->Fonts->AddFontFromFileTTF(Constants::GUI::arialFont, 18.0f, NULL, io->Fonts->GetGlyphRangesDefault());
+    IM_ASSERT(font != nullptr);
+
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();

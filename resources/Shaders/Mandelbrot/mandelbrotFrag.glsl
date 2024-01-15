@@ -21,7 +21,7 @@ void main()
     vec2 c = u_fractalCenter + normalizedCoord * (1 / u_fractalScale);
 
     // Add time to create animation
-    vec2 juliaC = vec2(cos(u_time), sin(u_time)); // Adjust the multiplier for different speeds
+    vec2 juliaC = vec2(cos(u_time), sin(u_time));
 
     vec2 z = c;
     int iterations = 0;

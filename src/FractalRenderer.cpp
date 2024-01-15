@@ -1,4 +1,5 @@
 #include "FractalRenderer.h"
+#include "Constants.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
 #include <cstdio>
@@ -11,7 +12,7 @@ FractalRenderer::FractalRenderer()
 	 color1(1.0f, 0.0f, 0.0f), color2(0.0f, 0.0f, 1.0f), color3(0.0f, 1.0f, 0.0f), escapeRadius(4.0f)
 {
 	// Initialize a GLFW window
-	window = Window::Init(Constants::Window::Name, nullptr);
+	window = Window::Init(Constants::Window::windowName, Constants::Window::windowIcon);
 	if (!window)
 		exit(EXIT_FAILURE);
 

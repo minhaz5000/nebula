@@ -7,15 +7,18 @@ namespace Constants
 {
 	namespace Window
 	{
-		constexpr const char * Name = "Nebula - A Fractal Renderer";
+		constexpr const char * windowName = "Nebula - A Fractal Renderer";
 		constexpr const int Width = 1280;
 		constexpr const int Height = 720;
-		// Window
+		constexpr const char * windowIcon = "resources/Icons/nebula_icon.png";
 	};
 
 	namespace GUI
 	{
 		constexpr const char * GLSL_VERSION = "#version 460";
+
+		// Fonts
+		constexpr const char * arialFont = "resources/Fonts/arial.ttf";
 	}
 
 	namespace Shaders

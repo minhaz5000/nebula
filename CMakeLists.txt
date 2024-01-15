@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
 
 project(Nebula VERSION 1.0
 	DESCRIPTION "A Fractal Renderer"
@@ -32,6 +32,8 @@ add_subdirectory(external/stb_image)
 # GLAD
 add_subdirectory(external/glad)
 
+# Add sources and link libraries
+
 add_executable(Nebula
   src/Constants.h
   src/Shader/Shader.cpp
@@ -56,4 +58,13 @@ target_link_libraries(Nebula
   PRIVATE imgui
   PRIVATE stb_image
   )
+
+# Copy resource folder to build dir
+add_custom_target(copy_resources ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/resources
+        ${PROJECT_BINARY_DIR}/resources
+        COMMENT "Copying resources into binary directory")
+
+add_dependencies(Nebula copy_resources)
 

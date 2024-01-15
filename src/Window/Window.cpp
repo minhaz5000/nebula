@@ -30,9 +30,6 @@ bool Window::createInstance(const char * windowName, const char * iconPath, int 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Anti-Aliasing
-    // glfwWindowHint(GLFW_SAMPLES, 4);
-
     windowWidth = width;
     windowHeight = height;
 
@@ -49,7 +46,7 @@ bool Window::createInstance(const char * windowName, const char * iconPath, int 
     if (iconPath) {
         GLFWimage icon;
         int numChannels;
-        icon.pixels = stbi_load(iconPath, &icon.width, &icon.height, &numChannels, 0);
+        icon.pixels = stbi_load(iconPath, &icon.width, &icon.height, &numChannels, 4); // rgba 4 channels
         if (icon.pixels) {
             glfwSetWindowIcon(window, 1, &icon);
             stbi_image_free(icon.pixels);
