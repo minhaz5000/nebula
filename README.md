@@ -22,7 +22,7 @@ Nebula is a fractal renderer built using GLAD, GLFW, GLM, and ImGui. It generate
 
    ```
    cmake -S . -B build
-   cmake --build build
+   cmake --build build --config Release
    cd build
    ./Nebula
    ```

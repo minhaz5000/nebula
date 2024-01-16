@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 
 project(Nebula VERSION 1.0
 	DESCRIPTION "A Fractal Renderer"
@@ -13,24 +13,25 @@ endif()
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# GLAD
+add_subdirectory(external/glad)
+
 # GLFW Library
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
 # OpenGL GLM Library
 add_subdirectory(external/glm)
 
-# DearImgui Library
+# Dear ImGui Library | Must add GLFW before.
 add_subdirectory(external/imgui)
 
 # stb_image Library
 add_subdirectory(external/stb_image)
-
-# GLAD
-add_subdirectory(external/glad)
 
 # Add sources and link libraries
 
@@ -52,9 +53,10 @@ add_executable(Nebula
   )
 
 target_link_libraries(Nebula
+  PRIVATE OpenGL::GL
   PRIVATE glad
   PRIVATE glfw
-  PRIVATE OpenGL::OpenGL
+  PRIVATE glm
   PRIVATE imgui
   PRIVATE stb_image
   )
@@ -62,8 +64,8 @@ target_link_libraries(Nebula
 # Copy resource folder to build dir
 add_custom_target(copy_resources ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/resources
-        ${PROJECT_BINARY_DIR}/resources
+        ${CMAKE_SOURCE_DIR}/resources
+        $<TARGET_FILE_DIR:Nebula>/resources
         COMMENT "Copying resources into binary directory")
 
 add_dependencies(Nebula copy_resources)

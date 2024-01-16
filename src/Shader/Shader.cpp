@@ -103,7 +103,7 @@ GLuint Shader::getUniformID(const GLchar * uniformName) const
     if (uniformId == GL_INVALID_INDEX) {
         // Handle error: Uniform variable not found
         std::cerr << "Error: Uniform variable '" << uniformName
-        << "' not found in the shader program." << std::endl;
+         << "' not found in the shader program." << std::endl;
     }
 
     // Cache the uniform location (even if it's GL_INVALID_INDEX)

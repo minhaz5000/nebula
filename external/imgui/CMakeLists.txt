@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.12)
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(imgui
-    ${IMGUI_DIR}/imgui_demo.cpp
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_tables.cpp
@@ -15,4 +14,6 @@ target_include_directories(imgui
     PUBLIC ${IMGUI_DIR}
     PUBLIC ${IMGUI_DIR}/backends
     )
+
+target_link_libraries(imgui PRIVATE glfw)
 
