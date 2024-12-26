@@ -65,7 +65,7 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Install dependencies (Linux)
-      if: runner.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev
 
     - name: Build
