@@ -1,7 +1,6 @@
 #pragma once
 #include "../Shader/Shader.h"
 #include <memory>
-#include "../Constants.h"
 
 class Renderer
 {

@@ -1,0 +1,50 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt update && sudo apt install -y \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libx11-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libwayland-dev \
+            wayland-protocols \
+            libxkbcommon-dev \
+            libegl1-mesa-dev \
+            libgl1-mesa-dev \
+            libgles2-mesa-dev \
+            libdrm-dev \
+            libgbm-dev \
+            libudev-dev \
+            libasound2-dev \
+            libpulse-dev \
+            libxcb1-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-randr0-dev
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: CMake configure
+        run: cmake -S . -B build -DBUILD_SHARED_LIBS=OFF
+      - name: CMake build
+        run: cmake --build build
+      - name: Pack folder
+        run: mkdir bin && cp -r build/resources build/Nebula bin
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nebula-release
+          path: bin
