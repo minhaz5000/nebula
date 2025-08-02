@@ -1,0 +1,3 @@
+[submodule "external/GraphicsInterface"]
+	path = external/GraphicsInterface
+	url = https://github.com/minhaz5000/GraphicsInterface.git
